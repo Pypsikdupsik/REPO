@@ -5,14 +5,14 @@
 <title>.</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;600;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
 
 <style>
 :root {
-  --bg1:#0a0f1f;
-  --bg2:#001a12;
+  --bg1:#0b0f1a;
+  --bg2:#000;
   --accent:#00ffb3;
-  --text:#ffffff;
+  --text:#fff;
 }
 
 * {
@@ -26,88 +26,78 @@ body {
   min-height: 100vh;
   background: radial-gradient(1200px 600px at 10% 10%, var(--bg1), var(--bg2));
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   color: var(--text);
-  overflow: hidden;
-}
-
-.noise {
-  position: fixed;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
-  pointer-events: none;
 }
 
 .container {
   text-align: center;
-  max-width: 700px;
   width: 100%;
-  padding: 20px;
+  max-width: 700px;
+  padding: 30px;
 }
 
 button {
-  background: linear-gradient(135deg, var(--accent), #ffffff);
+  background: var(--accent);
+  color: #000;
   border: none;
-  padding: 16px 38px;
-  font-size: 16px;
-  font-weight: 700;
+  padding: 16px 40px;
+  font-weight: 800;
   border-radius: 999px;
   cursor: pointer;
   margin: 10px;
-  color: #000;
-  box-shadow: 0 20px 40px rgba(0,0,0,.4);
   transition: 0.2s;
 }
 
 button:hover {
-  transform: translateY(-2px) scale(1.03);
+  transform: scale(1.05);
 }
 
-.hidden { display:none; }
+.hidden {
+  display: none;
+}
 
 .phrase {
-  font-size: clamp(24px, 4vw, 52px);
-  font-weight: 800;
+  font-size: clamp(26px, 4vw, 56px);
+  font-weight: 900;
   margin: 40px 0;
-  text-shadow: 0 0 20px var(--accent);
-}
-
-.panel {
-  margin-top: 20px;
-}
-
-.theme-btn {
-  padding: 10px 16px;
-  font-size: 14px;
-}
-
-input[type="color"] {
-  width: 40px;
-  height: 40px;
-  border: none;
-  background: none;
-  cursor: pointer;
+  text-shadow: 0 0 25px var(--accent);
 }
 
 /* GAME */
 .game {
-  margin-top: 40px;
+  margin-top: 50px;
 }
 
-.score {
-  margin-top: 10px;
-  font-weight: 600;
+.game-box {
+  margin: 20px auto;
+  width: 100%;
+  max-width: 500px;
+  height: 200px;
+  border-radius: 20px;
+  background: #111;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 700;
+  cursor: pointer;
+  user-select: none;
+}
+
+.stats {
+  margin-top: 15px;
   opacity: 0.8;
 }
 </style>
 </head>
 
 <body>
-<div class="noise"></div>
 
 <div class="container">
 
+  <!-- MESSAGE -->
   <button id="showBtn">show message</button>
 
   <div id="message" class="hidden">
@@ -115,84 +105,98 @@ input[type="color"] {
     <button id="backBtn">back</button>
   </div>
 
-  <div class="panel">
-    <button class="theme-btn" onclick="setTheme('bg')">blue × green</button>
-    <button class="theme-btn" onclick="setTheme('rb')">red × black</button>
-    <input type="color" id="c1">
-    <input type="color" id="c2">
-    <button class="theme-btn" onclick="setCustom()">custom</button>
-  </div>
-
   <!-- GAME -->
   <div class="game">
-    <h3>Click game</h3>
-    <button onclick="addScore()">CLICK</button>
-    <div class="score">
-      Score: <span id="score">0</span> |
-      Best: <span id="best">0</span>
+    <h2>Reaction Game</h2>
+    <div id="gameBox" class="game-box">Press start</div>
+    <button id="startGame">start</button>
+
+    <div class="stats">
+      Last: <span id="last">—</span> ms |
+      Best: <span id="best">—</span> ms
     </div>
   </div>
 
 </div>
 
 <script>
-let shown = false;
-
+/* MESSAGE LOGIC */
 const showBtn = document.getElementById('showBtn');
 const backBtn = document.getElementById('backBtn');
 const message = document.getElementById('message');
 
+let messageVisible = false;
+
 showBtn.onclick = () => {
-  if (shown) return; // FIX double tap bug
-  shown = true;
+  if (messageVisible) return;
+  messageVisible = true;
   showBtn.classList.add('hidden');
   message.classList.remove('hidden');
 };
 
 backBtn.onclick = () => {
-  shown = false;
+  messageVisible = false;
   message.classList.add('hidden');
   showBtn.classList.remove('hidden');
 };
 
-/* THEMES */
-function setTheme(type) {
-  if (type === 'bg') {
-    document.documentElement.style.setProperty('--bg1','#0a0f1f');
-    document.documentElement.style.setProperty('--bg2','#001a12');
-    document.documentElement.style.setProperty('--accent','#00ffb3');
-  }
-  if (type === 'rb') {
-    document.documentElement.style.setProperty('--bg1','#120000');
-    document.documentElement.style.setProperty('--bg2','#000000');
-    document.documentElement.style.setProperty('--accent','#ff0033');
-  }
-}
+/* GAME LOGIC */
+const gameBox = document.getElementById('gameBox');
+const startBtn = document.getElementById('startGame');
+const lastEl = document.getElementById('last');
+const bestEl = document.getElementById('best');
 
-function setCustom() {
-  const c1 = document.getElementById('c1').value;
-  const c2 = document.getElementById('c2').value;
-  document.documentElement.style.setProperty('--bg1', c1);
-  document.documentElement.style.setProperty('--bg2', c2);
-  document.documentElement.style.setProperty('--accent', '#ffffff');
-}
+let state = 'idle';
+let startTime = 0;
+let timeout = null;
 
-/* GAME */
-let score = 0;
-let best = localStorage.getItem('bestScore') || 0;
-document.getElementById('best').textContent = best;
+let best = localStorage.getItem('bestReaction');
+if (best) bestEl.textContent = best;
 
-function addScore() {
-  score++;
-  document.getElementById('score').textContent = score;
-  if (score > best) {
-    best = score;
-    localStorage.setItem('bestScore', best);
-    document.getElementById('best').textContent = best;
+startBtn.onclick = () => {
+  if (state !== 'idle') return;
+
+  state = 'waiting';
+  gameBox.style.background = '#111';
+  gameBox.textContent = 'Wait...';
+
+  const delay = Math.random() * 2000 + 1000;
+
+  timeout = setTimeout(() => {
+    state = 'ready';
+    gameBox.style.background = '#00ffb3';
+    gameBox.textContent = 'CLICK!';
+    startTime = performance.now();
+  }, delay);
+};
+
+gameBox.onclick = () => {
+  if (state === 'waiting') {
+    clearTimeout(timeout);
+    state = 'idle';
+    gameBox.textContent = 'Too early 💀';
+    gameBox.style.background = '#111';
+    return;
   }
-}
+
+  if (state === 'ready') {
+    const reaction = Math.round(performance.now() - startTime);
+    lastEl.textContent = reaction;
+
+    if (!best || reaction < best) {
+      best = reaction;
+      localStorage.setItem('bestReaction', best);
+      bestEl.textContent = best;
+    }
+
+    state = 'idle';
+    gameBox.style.background = '#111';
+    gameBox.textContent = 'Press start';
+  }
+};
 </script>
 
 </body>
 </html>
+
 
