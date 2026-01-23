@@ -127,7 +127,12 @@ function loadProfile() {
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 
-let bird, pipes, score, best, running;
+let bird, pipes, score, best, running, gameLoop, pipeInterval;
+const PIPE_SPEED = 2;
+const GRAVITY = 0.5;
+const JUMP_FORCE = -7;
+const PIPE_GAP = 120;
+const PIPE_WIDTH = 40;
 
 best = localStorage.getItem('flappyBest') || 0;
 document.getElementById('best').textContent = best;
@@ -137,64 +142,97 @@ function resetGame() {
   pipes = [];
   score = 0;
   running = true;
+  document.getElementById('score').textContent = score;
+  
+  // Очистка предыдущих интервалов
+  if (pipeInterval) clearInterval(pipeInterval);
+  if (gameLoop) cancelAnimationFrame(gameLoop);
 }
 
 function addPipe() {
-  const gap = 120;
   const top = Math.random() * 200 + 40;
-  pipes.push({ x: 360, top });
+  pipes.push({ 
+    x: canvas.width, 
+    top: top,
+    passed: false
+  });
 }
 
 function update() {
   if (!running) return;
 
-  bird.v += 0.5;
+  // Обновление птицы
+  bird.v += GRAVITY;
   bird.y += bird.v;
 
-  if (bird.y > canvas.height || bird.y < 0) endGame();
+  // Проверка столкновения с границами
+  if (bird.y > canvas.height - 12 || bird.y < 12) {
+    endGame();
+    return;
+  }
 
-  pipes.forEach(p => {
-    p.x -= 2;
+  // Обновление труб
+  for (let i = pipes.length - 1; i >= 0; i--) {
+    const p = pipes[i];
+    p.x -= PIPE_SPEED;
 
-    if (p.x === 80) {
+    // Проверка прохождения трубы
+    if (!p.passed && p.x + PIPE_WIDTH < bird.x) {
+      p.passed = true;
       score++;
       document.getElementById('score').textContent = score;
     }
 
-    if (
-      bird.x > p.x && bird.x < p.x + 40 &&
-      (bird.y < p.top || bird.y > p.top + 120)
-    ) endGame();
-  });
+    // Проверка столкновения
+    const inPipeX = bird.x + 12 > p.x && bird.x - 12 < p.x + PIPE_WIDTH;
+    const inTopPipe = bird.y - 12 < p.top;
+    const inBottomPipe = bird.y + 12 > p.top + PIPE_GAP;
+    
+    if (inPipeX && (inTopPipe || inBottomPipe)) {
+      endGame();
+      return;
+    }
 
-  pipes = pipes.filter(p => p.x > -50);
+    // Удаление труб за пределами экрана
+    if (p.x < -PIPE_WIDTH) {
+      pipes.splice(i, 1);
+    }
+  }
 }
 
 function draw() {
-  ctx.clearRect(0,0,360,480);
+  // Очистка канваса
+  ctx.fillStyle = '#111';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  // bird
-  ctx.fillStyle = profile.color;
+  // Отрисовка птицы
+  ctx.fillStyle = profile ? profile.color : '#00ffb3';
   ctx.beginPath();
   ctx.arc(bird.x, bird.y, 12, 0, Math.PI * 2);
   ctx.fill();
 
-  // pipes
+  // Отрисовка труб
   ctx.fillStyle = '#0f0';
   pipes.forEach(p => {
-    ctx.fillRect(p.x, 0, 40, p.top);
-    ctx.fillRect(p.x, p.top + 120, 40, 480);
+    // Верхняя труба
+    ctx.fillRect(p.x, 0, PIPE_WIDTH, p.top);
+    // Нижняя труба
+    ctx.fillRect(p.x, p.top + PIPE_GAP, PIPE_WIDTH, canvas.height);
   });
 }
 
-function loop() {
+function mainLoop() {
   update();
   draw();
-  requestAnimationFrame(loop);
+  if (running) {
+    gameLoop = requestAnimationFrame(mainLoop);
+  }
 }
 
 function endGame() {
   running = false;
+  if (pipeInterval) clearInterval(pipeInterval);
+  
   if (score > best) {
     best = score;
     localStorage.setItem('flappyBest', best);
@@ -204,18 +242,19 @@ function endGame() {
 
 canvas.onclick = () => {
   if (!running) return;
-  bird.v = -7;
+  bird.v = JUMP_FORCE;
 };
 
 document.getElementById('start').onclick = () => {
   resetGame();
-  setInterval(addPipe, 1500);
-  loop();
+  // Добавляем первую трубу сразу
+  addPipe();
+  // Добавляем трубы каждые 1500ms
+  pipeInterval = setInterval(addPipe, 1500);
+  // Запускаем игровой цикл
+  mainLoop();
 };
 </script>
 
 </body>
 </html>
-
-
-
