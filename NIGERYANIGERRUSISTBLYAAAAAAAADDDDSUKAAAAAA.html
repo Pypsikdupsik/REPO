@@ -1,111 +1,198 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>.</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<title>.</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Шрифт -->
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;600;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;600;800&display=swap" rel="stylesheet">
 
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Montserrat', sans-serif;
-    }
+<style>
+:root {
+  --bg1:#0a0f1f;
+  --bg2:#001a12;
+  --accent:#00ffb3;
+  --text:#ffffff;
+}
 
-    body {
-      height: 100vh;
-      background: radial-gradient(1200px 600px at 10% 10%, #1a1a1a, #000);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      color: #fff;
-    }
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Montserrat', sans-serif;
+}
 
-    .noise {
-      position: fixed;
-      inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
-      pointer-events: none;
-    }
+body {
+  min-height: 100vh;
+  background: radial-gradient(1200px 600px at 10% 10%, var(--bg1), var(--bg2));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text);
+  overflow: hidden;
+}
 
-    .container {
-      text-align: center;
-      animation: fadeIn 1.2s ease forwards;
-    }
+.noise {
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
 
-    button {
-      background: linear-gradient(135deg, #ff004c, #ff7a00);
-      border: none;
-      padding: 20px 48px;
-      font-size: 18px;
-      font-weight: 600;
-      color: #000;
-      border-radius: 999px;
-      cursor: pointer;
-      box-shadow: 0 20px 40px rgba(255, 0, 76, 0.35);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
+.container {
+  text-align: center;
+  max-width: 700px;
+  width: 100%;
+  padding: 20px;
+}
 
-    button:hover {
-      transform: translateY(-3px) scale(1.02);
-      box-shadow: 0 30px 60px rgba(255, 0, 76, 0.5);
-    }
+button {
+  background: linear-gradient(135deg, var(--accent), #ffffff);
+  border: none;
+  padding: 16px 38px;
+  font-size: 16px;
+  font-weight: 700;
+  border-radius: 999px;
+  cursor: pointer;
+  margin: 10px;
+  color: #000;
+  box-shadow: 0 20px 40px rgba(0,0,0,.4);
+  transition: 0.2s;
+}
 
-    .phrase {
-      margin-top: 40px;
-      font-size: clamp(24px, 4vw, 56px);
-      font-weight: 800;
-      letter-spacing: 0.02em;
-      opacity: 0;
-      transform: translateY(20px);
-      transition: all 0.6s ease;
-      text-shadow:
-        0 0 10px rgba(255, 0, 76, 0.6),
-        0 0 40px rgba(255, 0, 76, 0.4);
-    }
+button:hover {
+  transform: translateY(-2px) scale(1.03);
+}
 
-    .phrase.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
+.hidden { display:none; }
 
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: scale(0.98);
-      }
-      to {
-        opacity: 1;
-        transform: scale(1);
-      }
-    }
-  </style>
+.phrase {
+  font-size: clamp(24px, 4vw, 52px);
+  font-weight: 800;
+  margin: 40px 0;
+  text-shadow: 0 0 20px var(--accent);
+}
+
+.panel {
+  margin-top: 20px;
+}
+
+.theme-btn {
+  padding: 10px 16px;
+  font-size: 14px;
+}
+
+input[type="color"] {
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+/* GAME */
+.game {
+  margin-top: 40px;
+}
+
+.score {
+  margin-top: 10px;
+  font-weight: 600;
+  opacity: 0.8;
+}
+</style>
 </head>
+
 <body>
+<div class="noise"></div>
 
-  <div class="noise"></div>
+<div class="container">
 
-  <div class="container">
-    <button id="btn">ЖМИ НАХУЙ</button>
-    <div id="text" class="phrase">
-      сквака блядь где сч сука 
+  <button id="showBtn">show message</button>
+
+  <div id="message" class="hidden">
+    <div class="phrase">сквака скидывай сч уже заебал ***</div>
+    <button id="backBtn">back</button>
+  </div>
+
+  <div class="panel">
+    <button class="theme-btn" onclick="setTheme('bg')">blue × green</button>
+    <button class="theme-btn" onclick="setTheme('rb')">red × black</button>
+    <input type="color" id="c1">
+    <input type="color" id="c2">
+    <button class="theme-btn" onclick="setCustom()">custom</button>
+  </div>
+
+  <!-- GAME -->
+  <div class="game">
+    <h3>Click game</h3>
+    <button onclick="addScore()">CLICK</button>
+    <div class="score">
+      Score: <span id="score">0</span> |
+      Best: <span id="best">0</span>
     </div>
   </div>
 
-  <script>
-    const btn = document.getElementById('btn');
-    const text = document.getElementById('text');
+</div>
 
-    btn.addEventListener('click', () => {
-      btn.style.display = 'none';
-      text.classList.add('show');
-    });
-  </script>
+<script>
+let shown = false;
+
+const showBtn = document.getElementById('showBtn');
+const backBtn = document.getElementById('backBtn');
+const message = document.getElementById('message');
+
+showBtn.onclick = () => {
+  if (shown) return; // FIX double tap bug
+  shown = true;
+  showBtn.classList.add('hidden');
+  message.classList.remove('hidden');
+};
+
+backBtn.onclick = () => {
+  shown = false;
+  message.classList.add('hidden');
+  showBtn.classList.remove('hidden');
+};
+
+/* THEMES */
+function setTheme(type) {
+  if (type === 'bg') {
+    document.documentElement.style.setProperty('--bg1','#0a0f1f');
+    document.documentElement.style.setProperty('--bg2','#001a12');
+    document.documentElement.style.setProperty('--accent','#00ffb3');
+  }
+  if (type === 'rb') {
+    document.documentElement.style.setProperty('--bg1','#120000');
+    document.documentElement.style.setProperty('--bg2','#000000');
+    document.documentElement.style.setProperty('--accent','#ff0033');
+  }
+}
+
+function setCustom() {
+  const c1 = document.getElementById('c1').value;
+  const c2 = document.getElementById('c2').value;
+  document.documentElement.style.setProperty('--bg1', c1);
+  document.documentElement.style.setProperty('--bg2', c2);
+  document.documentElement.style.setProperty('--accent', '#ffffff');
+}
+
+/* GAME */
+let score = 0;
+let best = localStorage.getItem('bestScore') || 0;
+document.getElementById('best').textContent = best;
+
+function addScore() {
+  score++;
+  document.getElementById('score').textContent = score;
+  if (score > best) {
+    best = score;
+    localStorage.setItem('bestScore', best);
+    document.getElementById('best').textContent = best;
+  }
+}
+</script>
 
 </body>
 </html>
+
