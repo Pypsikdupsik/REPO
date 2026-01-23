@@ -1,202 +1,221 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
 <meta charset="UTF-8">
 <title>.</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
 
 <style>
 :root {
-  --bg1:#0b0f1a;
-  --bg2:#000;
   --accent:#00ffb3;
-  --text:#fff;
 }
 
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: 'Montserrat', sans-serif;
+  font-family: Montserrat, sans-serif;
 }
 
 body {
   min-height: 100vh;
-  background: radial-gradient(1200px 600px at 10% 10%, var(--bg1), var(--bg2));
+  background: radial-gradient(circle at top, #111, #000);
+  color: white;
   display: flex;
   justify-content: center;
   align-items: center;
-  color: var(--text);
 }
 
 .container {
-  text-align: center;
   width: 100%;
-  max-width: 700px;
-  padding: 30px;
+  max-width: 420px;
+  text-align: center;
+}
+
+input, button {
+  padding: 12px 20px;
+  border-radius: 999px;
+  border: none;
+  font-weight: 700;
+  margin: 8px;
 }
 
 button {
   background: var(--accent);
   color: #000;
-  border: none;
-  padding: 16px 40px;
-  font-weight: 800;
-  border-radius: 999px;
   cursor: pointer;
-  margin: 10px;
-  transition: 0.2s;
 }
 
-button:hover {
-  transform: scale(1.05);
-}
+.hidden { display: none; }
 
-.hidden {
-  display: none;
-}
-
-.phrase {
-  font-size: clamp(26px, 4vw, 56px);
-  font-weight: 900;
-  margin: 40px 0;
-  text-shadow: 0 0 25px var(--accent);
-}
-
-/* GAME */
-.game {
-  margin-top: 50px;
-}
-
-.game-box {
-  margin: 20px auto;
-  width: 100%;
-  max-width: 500px;
-  height: 200px;
-  border-radius: 20px;
+canvas {
   background: #111;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24px;
-  font-weight: 700;
-  cursor: pointer;
-  user-select: none;
+  border-radius: 20px;
+  display: block;
+  margin: 20px auto;
 }
 
-.stats {
-  margin-top: 15px;
-  opacity: 0.8;
+.info {
+  opacity: .8;
+  margin-top: 10px;
 }
 </style>
 </head>
 
 <body>
-
 <div class="container">
 
-  <!-- MESSAGE -->
-  <button id="showBtn">show message</button>
+  <!-- PERSONALIZATION -->
+  <div id="setup">
+    <h2>Personalize</h2>
+    <input id="nameInput" placeholder="Your name">
+    <input type="color" id="colorInput">
+    <br>
+    <button id="saveProfile">Save</button>
+  </div>
 
+  <!-- MESSAGE -->
   <div id="message" class="hidden">
-    <div class="phrase">сквака скидывай сч уже заебал ***</div>
-    <button id="backBtn">back</button>
+    <h2 id="welcome"></h2>
+    <p style="margin:20px 0;font-weight:900;text-shadow:0 0 20px var(--accent);">
+      сквака скидывай сч уже заебал ***
+    </p>
   </div>
 
   <!-- GAME -->
-  <div class="game">
-    <h2>Reaction Game</h2>
-    <div id="gameBox" class="game-box">Press start</div>
-    <button id="startGame">start</button>
-
-    <div class="stats">
-      Last: <span id="last">—</span> ms |
-      Best: <span id="best">—</span> ms
+  <div class="game hidden">
+    <canvas id="game" width="360" height="480"></canvas>
+    <button id="start">Start</button>
+    <div class="info">
+      Score: <span id="score">0</span> |
+      Best: <span id="best">0</span>
     </div>
   </div>
 
 </div>
 
 <script>
-/* MESSAGE LOGIC */
-const showBtn = document.getElementById('showBtn');
-const backBtn = document.getElementById('backBtn');
-const message = document.getElementById('message');
+/* ===== PERSONALIZATION ===== */
+const nameInput = document.getElementById('nameInput');
+const colorInput = document.getElementById('colorInput');
+const saveBtn = document.getElementById('saveProfile');
+const welcome = document.getElementById('welcome');
 
-let messageVisible = false;
+let profile = JSON.parse(localStorage.getItem('profile'));
 
-showBtn.onclick = () => {
-  if (messageVisible) return;
-  messageVisible = true;
-  showBtn.classList.add('hidden');
-  message.classList.remove('hidden');
+if (profile) loadProfile();
+
+saveBtn.onclick = () => {
+  profile = {
+    name: nameInput.value || 'Player',
+    color: colorInput.value || '#00ffb3'
+  };
+  localStorage.setItem('profile', JSON.stringify(profile));
+  loadProfile();
 };
 
-backBtn.onclick = () => {
-  messageVisible = false;
-  message.classList.add('hidden');
-  showBtn.classList.remove('hidden');
-};
+function loadProfile() {
+  document.documentElement.style.setProperty('--accent', profile.color);
+  welcome.textContent = `Yo, ${profile.name}`;
+  document.getElementById('setup').classList.add('hidden');
+  document.getElementById('message').classList.remove('hidden');
+  document.querySelector('.game').classList.remove('hidden');
+}
 
-/* GAME LOGIC */
-const gameBox = document.getElementById('gameBox');
-const startBtn = document.getElementById('startGame');
-const lastEl = document.getElementById('last');
-const bestEl = document.getElementById('best');
+/* ===== GAME ===== */
+const canvas = document.getElementById('game');
+const ctx = canvas.getContext('2d');
 
-let state = 'idle';
-let startTime = 0;
-let timeout = null;
+let bird, pipes, score, best, running;
 
-let best = localStorage.getItem('bestReaction');
-if (best) bestEl.textContent = best;
+best = localStorage.getItem('flappyBest') || 0;
+document.getElementById('best').textContent = best;
 
-startBtn.onclick = () => {
-  if (state !== 'idle') return;
+function resetGame() {
+  bird = { x: 80, y: 200, v: 0 };
+  pipes = [];
+  score = 0;
+  running = true;
+}
 
-  state = 'waiting';
-  gameBox.style.background = '#111';
-  gameBox.textContent = 'Wait...';
+function addPipe() {
+  const gap = 120;
+  const top = Math.random() * 200 + 40;
+  pipes.push({ x: 360, top });
+}
 
-  const delay = Math.random() * 2000 + 1000;
+function update() {
+  if (!running) return;
 
-  timeout = setTimeout(() => {
-    state = 'ready';
-    gameBox.style.background = '#00ffb3';
-    gameBox.textContent = 'CLICK!';
-    startTime = performance.now();
-  }, delay);
-};
+  bird.v += 0.5;
+  bird.y += bird.v;
 
-gameBox.onclick = () => {
-  if (state === 'waiting') {
-    clearTimeout(timeout);
-    state = 'idle';
-    gameBox.textContent = 'Too early 💀';
-    gameBox.style.background = '#111';
-    return;
-  }
+  if (bird.y > canvas.height || bird.y < 0) endGame();
 
-  if (state === 'ready') {
-    const reaction = Math.round(performance.now() - startTime);
-    lastEl.textContent = reaction;
+  pipes.forEach(p => {
+    p.x -= 2;
 
-    if (!best || reaction < best) {
-      best = reaction;
-      localStorage.setItem('bestReaction', best);
-      bestEl.textContent = best;
+    if (p.x === 80) {
+      score++;
+      document.getElementById('score').textContent = score;
     }
 
-    state = 'idle';
-    gameBox.style.background = '#111';
-    gameBox.textContent = 'Press start';
+    if (
+      bird.x > p.x && bird.x < p.x + 40 &&
+      (bird.y < p.top || bird.y > p.top + 120)
+    ) endGame();
+  });
+
+  pipes = pipes.filter(p => p.x > -50);
+}
+
+function draw() {
+  ctx.clearRect(0,0,360,480);
+
+  // bird
+  ctx.fillStyle = profile.color;
+  ctx.beginPath();
+  ctx.arc(bird.x, bird.y, 12, 0, Math.PI * 2);
+  ctx.fill();
+
+  // pipes
+  ctx.fillStyle = '#0f0';
+  pipes.forEach(p => {
+    ctx.fillRect(p.x, 0, 40, p.top);
+    ctx.fillRect(p.x, p.top + 120, 40, 480);
+  });
+}
+
+function loop() {
+  update();
+  draw();
+  requestAnimationFrame(loop);
+}
+
+function endGame() {
+  running = false;
+  if (score > best) {
+    best = score;
+    localStorage.setItem('flappyBest', best);
+    document.getElementById('best').textContent = best;
   }
+}
+
+canvas.onclick = () => {
+  if (!running) return;
+  bird.v = -7;
+};
+
+document.getElementById('start').onclick = () => {
+  resetGame();
+  setInterval(addPipe, 1500);
+  loop();
 };
 </script>
 
 </body>
 </html>
+
 
 
