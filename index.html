@@ -560,6 +560,49 @@
             z-index: 0;
             pointer-events: none;
         }
+        #firstLaunch {
+    position: fixed;
+    inset: 0;
+    background: #000;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeOut 1.2s ease forwards;
+    animation-delay: 4s;
+}
+
+.hello-text {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 3rem;
+    text-align: center;
+    color: white;
+    letter-spacing: 2px;
+    opacity: 0;
+    animation: helloFade 3s ease forwards;
+}
+
+@keyframes helloFade {
+    0% {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    30% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+
     </style>
     
     <!-- Particles.js for background effect -->
@@ -567,6 +610,10 @@
 </head>
 
 <body>
+    <div id="firstLaunch">
+    <div class="hello-text">Hello<br>squeaky drop sch</div>
+</div>
+
     <!-- Animated background -->
     <div id="particles-js"></div>
     
@@ -1161,5 +1208,19 @@
         registerPassword.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') registerBtn.click();
         });
+    window.addEventListener('load', () => {
+    const firstLaunch = document.getElementById('firstLaunch');
+
+    if (localStorage.getItem('firstLaunchDone')) {
+        firstLaunch.remove();
+    } else {
+        localStorage.setItem('firstLaunchDone', 'true');
+
+        setTimeout(() => {
+            firstLaunch.remove();
+        }, 5200);
+    }
+});
+
     </script>
 </body></html>
