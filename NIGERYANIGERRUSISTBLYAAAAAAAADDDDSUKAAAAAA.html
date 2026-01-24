@@ -1,260 +1,1226 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-<meta charset="UTF-8">
-<title>.</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
-
-<style>
-:root {
-  --accent:#00ffb3;
+<html lang="ru" style="--accent: #aeaf79; --accent-dark: #8b8c60;"><head>
+    <meta charset="UTF-8">
+    <title>сквака дропай сч | быстрее блядь</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&amp;family=Orbitron:wght@400;500;700&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --accent: #00ffb3;
+            --accent-dark: #00cc8f;
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #111111;
+            --bg-tertiary: #1a1a1a;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --card-bg: rgba(20, 20, 20, 0.8);
+            --border-color: rgba(0, 255, 179, 0.2);
+            --shadow-glow: 0 0 20px rgba(0, 255, 179, 0.3);
+            --shadow-strong: 0 0 30px rgba(0, 255, 179, 0.5);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        body {
+            min-height: 100vh;
+            background: radial-gradient(ellipse at top, #0a0a0a 0%, #000000 100%);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(0, 255, 179, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(0, 255, 179, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(0, 255, 179, 0.04) 0%, transparent 50%);
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Header */
+        .header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 800;
+            font-size: 1.8rem;
+            letter-spacing: 1px;
+            color: var(--accent);
+            text-shadow: var(--shadow-glow);
+        }
+        
+        .logo i {
+            font-size: 2rem;
+        }
+        
+        .profile-badge {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--card-bg);
+            padding: 10px 20px;
+            border-radius: 50px;
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+            transition: var(--transition);
+        }
+        
+        .profile-badge:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-glow);
+        }
+        
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #000;
+        }
+        
+        /* Auth Section */
+        .auth-section {
+            width: 100%;
+            max-width: 400px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 25px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .auth-tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+        }
+        
+        .auth-tab.active {
+            color: var(--accent);
+        }
+        
+        .auth-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--accent);
+        }
+        
+        .auth-form {
+            display: none;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .auth-form.active {
+            display: flex;
+        }
+        
+        /* Content sections */
+        .section {
+            width: 100%;
+            max-width: 800px;
+            margin-bottom: 40px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+            transition: var(--transition);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .section:hover {
+            box-shadow: var(--shadow-glow);
+        }
+        
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            margin-bottom: 25px;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-title i {
+            font-size: 1.3rem;
+        }
+        
+        /* Personalization section */
+        .personalization-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .input-label {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .styled-input, .styled-color {
+            padding: 15px 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(10, 10, 10, 0.7);
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+        
+        .styled-input:focus, .styled-color:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(0, 255, 179, 0.2);
+        }
+        
+        .styled-color {
+            height: 50px;
+            width: 100%;
+            cursor: pointer;
+        }
+        
+        .btn {
+            padding: 16px 30px;
+            border-radius: 12px;
+            border: none;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            color: #000;
+            box-shadow: 0 4px 15px rgba(0, 255, 179, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(0, 255, 179, 0.4);
+        }
+        
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+        
+        .btn-small {
+            padding: 8px 15px;
+            font-size: 0.9rem;
+        }
+        
+        /* Welcome section */
+        .welcome-box {
+            text-align: center;
+            animation: pulse 2s infinite alternate;
+        }
+        
+        @keyframes pulse {
+            0% { text-shadow: 0 0 10px rgba(0, 255, 179, 0.5); }
+            100% { text-shadow: 0 0 20px rgba(0, 255, 179, 0.8), 0 0 30px rgba(0, 255, 179, 0.4); }
+        }
+        
+        .welcome-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+            color: var(--accent);
+        }
+        
+        .tagline {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 25px;
+            font-weight: 500;
+        }
+        
+        .game-hint {
+            background: rgba(0, 255, 179, 0.1);
+            border-left: 4px solid var(--accent);
+            padding: 15px;
+            border-radius: 0 10px 10px 0;
+            margin: 25px 0;
+            text-align: left;
+        }
+        
+        .game-hint i {
+            color: var(--accent);
+            margin-right: 10px;
+        }
+        
+        .score-board {
+            display: flex;
+            justify-content: space-around;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border: 1px solid var(--border-color);
+        }
+        
+        .score-item {
+            text-align: center;
+        }
+        
+        .score-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            color: var(--accent);
+            font-weight: 700;
+            display: block;
+        }
+        
+        .score-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: 5px;
+        }
+        
+        /* Games section */
+        .games-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            width: 100%;
+        }
+        
+        .game-card {
+            background: var(--bg-tertiary);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+        
+        .game-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-strong);
+        }
+        
+        .game-header {
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.4);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .game-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            color: var(--accent);
+        }
+        
+        .game-frame {
+            width: 100%;
+            height: 622px;
+            border: none;
+            display: block;
+        }
+        
+        .game-canvas {
+            width: 100%;
+            height: 400px;
+            background: #111;
+            display: block;
+        }
+        
+        .game-controls {
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.3);
+        }
+        
+        .score-display {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .game-score-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .score-label-small {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+        }
+        
+        .score-value-small {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            color: var(--accent);
+            font-weight: 700;
+        }
+        
+        /* Fullscreen button */
+        .fullscreen-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            color: var(--accent);
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+            z-index: 10;
+            transition: var(--transition);
+        }
+        
+        .fullscreen-btn:hover {
+            background: rgba(0, 255, 179, 0.2);
+        }
+        
+        /* Hidden class */
+        .hidden {
+            display: none !important;
+        }
+        
+        /* Footer */
+        .footer {
+            width: 100%;
+            text-align: center;
+            padding: 30px 0;
+            margin-top: 40px;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 15px;
+        }
+        
+        .footer-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        
+        .footer-link:hover {
+            color: var(--accent);
+        }
+        
+        /* Message styling */
+        .message {
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-weight: 500;
+        }
+        
+        .success {
+            background: rgba(76, 175, 80, 0.2);
+            border: 1px solid rgba(76, 175, 80, 0.3);
+            color: #4CAF50;
+        }
+        
+        .error {
+            background: rgba(244, 67, 54, 0.2);
+            border: 1px solid rgba(244, 67, 54, 0.3);
+            color: #f44336;
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .section, .auth-section {
+                padding: 20px;
+            }
+            
+            .games-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .welcome-title {
+                font-size: 1.8rem;
+            }
+            
+            .score-board {
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+        
+        /* Animation for page transitions */
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Particles effect */
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 0;
+            pointer-events: none;
+        }
+        #firstLaunch {
+    position: fixed;
+    inset: 0;
+    background: #000;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeOut 1.2s ease forwards;
+    animation-delay: 4s;
 }
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  font-family: Montserrat, sans-serif;
+.hello-text {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 3rem;
+    text-align: center;
+    color: white;
+    letter-spacing: 2px;
+    opacity: 0;
+    animation: helloFade 3s ease forwards;
 }
 
-body {
-  min-height: 100vh;
-  background: radial-gradient(circle at top, #111, #000);
-  color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+@keyframes helloFade {
+    0% {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    30% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    100% {
+        opacity: 1;
+    }
 }
 
-.container {
-  width: 100%;
-  max-width: 420px;
-  text-align: center;
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+        visibility: hidden;
+    }
 }
 
-input, button {
-  padding: 12px 20px;
-  border-radius: 999px;
-  border: none;
-  font-weight: 700;
-  margin: 8px;
-}
-
-button {
-  background: var(--accent);
-  color: #000;
-  cursor: pointer;
-}
-
-.hidden { display: none; }
-
-canvas {
-  background: #111;
-  border-radius: 20px;
-  display: block;
-  margin: 20px auto;
-}
-
-.info {
-  opacity: .8;
-  margin-top: 10px;
-}
-</style>
+    </style>
+    
+    <!-- Particles.js for background effect -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 </head>
 
 <body>
-<div class="container">
-
-  <!-- PERSONALIZATION -->
-  <div id="setup">
-    <h2>Personalize</h2>
-    <input id="nameInput" placeholder="Your name">
-    <input type="color" id="colorInput">
-    <br>
-    <button id="saveProfile">Save</button>
-  </div>
-
-  <!-- MESSAGE -->
-  <div id="message" class="hidden">
-    <h2 id="welcome"></h2>
-    <p style="margin:20px 0;font-weight:900;text-shadow:0 0 20px var(--accent);">
-      сквака скидывай сч уже заебал ***
-    </p>
-  </div>
-
-  <!-- GAME -->
-  <div class="game hidden">
-    <canvas id="game" width="360" height="480"></canvas>
-    <button id="start">Start</button>
-    <div class="info">
-      Score: <span id="score">0</span> |
-      Best: <span id="best">0</span>
-    </div>
-  </div>
-
+    <div id="firstLaunch">
+    <div class="hello-text">Hello<br>squeaky drop sch</div>
 </div>
 
-<script>
-/* ===== PERSONALIZATION ===== */
-const nameInput = document.getElementById('nameInput');
-const colorInput = document.getElementById('colorInput');
-const saveBtn = document.getElementById('saveProfile');
-const welcome = document.getElementById('welcome');
-
-let profile = JSON.parse(localStorage.getItem('profile'));
-
-if (profile) loadProfile();
-
-saveBtn.onclick = () => {
-  profile = {
-    name: nameInput.value || 'Player',
-    color: colorInput.value || '#00ffb3'
-  };
-  localStorage.setItem('profile', JSON.stringify(profile));
-  loadProfile();
-};
-
-function loadProfile() {
-  document.documentElement.style.setProperty('--accent', profile.color);
-  welcome.textContent = `Yo, ${profile.name}`;
-  document.getElementById('setup').classList.add('hidden');
-  document.getElementById('message').classList.remove('hidden');
-  document.querySelector('.game').classList.remove('hidden');
-}
-
-/* ===== GAME ===== */
-const canvas = document.getElementById('game');
-const ctx = canvas.getContext('2d');
-
-let bird, pipes, score, best, running, gameLoop, pipeInterval;
-const PIPE_SPEED = 2;
-const GRAVITY = 0.5;
-const JUMP_FORCE = -7;
-const PIPE_GAP = 120;
-const PIPE_WIDTH = 40;
-
-best = localStorage.getItem('flappyBest') || 0;
-document.getElementById('best').textContent = best;
-
-function resetGame() {
-  bird = { x: 80, y: 200, v: 0 };
-  pipes = [];
-  score = 0;
-  running = true;
-  document.getElementById('score').textContent = score;
-  
-  // Очистка предыдущих интервалов
-  if (pipeInterval) clearInterval(pipeInterval);
-  if (gameLoop) cancelAnimationFrame(gameLoop);
-}
-
-function addPipe() {
-  const top = Math.random() * 200 + 40;
-  pipes.push({ 
-    x: canvas.width, 
-    top: top,
-    passed: false
-  });
-}
-
-function update() {
-  if (!running) return;
-
-  // Обновление птицы
-  bird.v += GRAVITY;
-  bird.y += bird.v;
-
-  // Проверка столкновения с границами
-  if (bird.y > canvas.height - 12 || bird.y < 12) {
-    endGame();
-    return;
-  }
-
-  // Обновление труб
-  for (let i = pipes.length - 1; i >= 0; i--) {
-    const p = pipes[i];
-    p.x -= PIPE_SPEED;
-
-    // Проверка прохождения трубы
-    if (!p.passed && p.x + PIPE_WIDTH < bird.x) {
-      p.passed = true;
-      score++;
-      document.getElementById('score').textContent = score;
-    }
-
-    // Проверка столкновения
-    const inPipeX = bird.x + 12 > p.x && bird.x - 12 < p.x + PIPE_WIDTH;
-    const inTopPipe = bird.y - 12 < p.top;
-    const inBottomPipe = bird.y + 12 > p.top + PIPE_GAP;
+    <!-- Animated background -->
+    <div id="particles-js"></div>
     
-    if (inPipeX && (inTopPipe || inBottomPipe)) {
-      endGame();
-      return;
+    <div class="container">
+        <!-- Header -->
+        <header class="header fade-in">
+            <div class="logo">
+                <i class="fas fa-gamepad"></i>
+                <span>skvakadropaisch</span>
+            </div>
+            <div class="profile-badge hidden" id="profileBadge">
+                <div class="avatar" id="avatar" style="background: rgb(174, 175, 121);">Д</div>
+                <span id="profileName">долбае67</span>
+                <button class="btn btn-small" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </header>
+        
+        <!-- Auth Section -->
+        <section class="auth-section fade-in" id="authSection">
+            <div class="auth-tabs">
+                <button class="auth-tab active" data-form="login">Вход</button>
+                <button class="auth-tab" data-form="register">Регистрация</button>
+            </div>
+            
+            <!-- Login Form -->
+            <div class="auth-form active" id="loginForm">
+                <div class="input-group">
+                    <label class="input-label">
+                        <i class="fas fa-user"></i>
+                        Логин
+                    </label>
+                    <input type="text" id="loginUsername" class="styled-input" placeholder="Введите логин">
+                </div>
+                
+                <div class="input-group">
+                    <label class="input-label">
+                        <i class="fas fa-lock"></i>
+                        Пароль
+                    </label>
+                    <input type="password" id="loginPassword" class="styled-input" placeholder="Введите пароль">
+                </div>
+                
+                <div id="loginMessage" class="message hidden"></div>
+                
+                <button id="loginBtn" class="btn btn-primary">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Войти
+                </button>
+            </div>
+            
+            <!-- Register Form -->
+            <div class="auth-form" id="registerForm">
+                <div class="input-group">
+                    <label class="input-label">
+                        <i class="fas fa-user"></i>
+                        Логин
+                    </label>
+                    <input type="text" id="registerUsername" class="styled-input" placeholder="Придумайте логин">
+                </div>
+                
+                <div class="input-group">
+                    <label class="input-label">
+                        <i class="fas fa-lock"></i>
+                        Пароль
+                    </label>
+                    <input type="password" id="registerPassword" class="styled-input" placeholder="Придумайте пароль">
+                </div>
+                
+                <div id="registerMessage" class="message hidden"></div>
+                
+                <button id="registerBtn" class="btn btn-primary">
+                    <i class="fas fa-user-plus"></i>
+                    Зарегистрироваться
+                </button>
+            </div>
+        </section>
+        
+        <!-- Main Content (hidden until login) -->
+        <section class="section fade-in hidden" id="mainContent">
+            <!-- Welcome Section -->
+            <div class="welcome-box">
+                <h2 class="welcome-title" id="welcome">Добро пожаловать!</h2>
+                <p class="tagline" id="userTagline">Готовы получить скинченджер от скваки?</p>
+                
+                <!-- Score Board -->
+                <div class="score-board">
+                    <div class="score-item">
+                        <span class="score-value" id="flappyBest">0</span>
+                        <span class="score-label">Flappy Bird Рекорд</span>
+                    </div>
+                    <div class="score-item">
+                        <span class="score-value" id="gamesPlayed">0</span>
+                        <span class="score-label">Сыграно игр</span>
+                    </div>
+                    <div class="score-item">
+                        <span class="score-value" id="totalScore">0</span>
+                        <span class="score-label">Общий счет</span>
+                    </div>
+                </div>
+                
+                <div class="game-hint">
+                    <i class="fas fa-info-circle"></i>
+                    <span>Cовет скваке: СКВАКА ДРОПАЙ СЧ УЖЕ БЛЯДЬЬЬЬЬЬЬЬЬЬ</span>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Games Section (hidden until login) -->
+        <section class="section fade-in hidden" id="gamesSection">
+            <h2 class="section-title">
+                <i class="fas fa-gamepad"></i>
+                Игры
+            </h2>
+            
+            <div class="games-container" id="gamesContainer">
+                <!-- Flappy Bird Game -->
+                <div class="game-card">
+                    <div class="game-header">
+                        <h3 class="game-title">
+                            <i class="fas fa-dove"></i>
+                            череда неудач не дающие скваке скинуть сч
+                        </h3>
+                        <div class="score-display">
+                            <div class="game-score-item">
+                                <div class="score-label-small">РЕКОРД</div>
+                                <div class="score-value-small" id="gameBest">0</div>
+                            </div>
+                            <div class="game-score-item">
+                                <div class="score-label-small">СЧЕТ</div>
+                                <div class="score-value-small" id="gameScore">0</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="position: relative;">
+                        <button class="fullscreen-btn" onclick="toggleFullscreen('flappyFrame')">
+                            <i class="fas fa-expand"></i>
+                        </button>
+                        <iframe src="https://st.8games.net/14/igra-flappy-bird-flapi-berd//" class="game-frame" scrolling="no" frameborder="0" allowfullscreen="" id="flappyFrame"></iframe>
+                    </div>
+                    <div class="game-controls">
+                        <button class="btn btn-primary" onclick="saveFlappyScore()">
+                            <i class="fas fa-save"></i>
+                            Сохранить рекорд
+                        </button>
+                        <button class="btn btn-small" onclick="updateFlappyScore()">
+                            <i class="fas fa-sync"></i>
+                            Обновить счет
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Granny Game -->
+                <div class="game-card">
+                    <div class="game-header">
+                        <h3 class="game-title">
+                            <i class="fas fa-gamepad"></i>
+                            Сквака не скидывающий сч против нас которые хотят сч
+                        </h3>
+                        <div class="score-display">
+                            <div class="game-score-item">
+                                <div class="score-label-small">УРОВЕНЬ</div>
+                                <div class="score-value-small" id="gameLevel">1</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="position: relative;">
+                        <button class="fullscreen-btn" onclick="toggleFullscreen('grannyFrame')">
+                            <i class="fas fa-expand"></i>
+                        </button>
+                        <iframe src="https://g.vseigru.net/7/8g/igra-grenni-protiv-malysha-v-zhjoltom/" class="game-frame" scrolling="no" frameborder="0" allowfullscreen="" id="grannyFrame"></iframe>
+                    </div>
+                    <div class="game-controls">
+                        <button class="btn btn-primary" onclick="saveGrannyScore()">
+                            <i class="fas fa-save"></i>
+                            Сохранить прогресс
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Skvakadropaisch © 2026 | все игры спизжены с vsegei.netidinahuy</p>
+            <div class="footer-links">
+                <a href="#" class="footer-link">пойти нахуй</a>
+                <a href="#" class="footer-link">пойти нахуй</a>
+                <a href="#" class="footer-link">пойти нахуй</a>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Initialize particles.js background
+        document.addEventListener('DOMContentLoaded', function() {
+            particlesJS("particles-js", {
+                particles: {
+                    number: { value: 80, density: { enable: true, value_area: 800 } },
+                    color: { value: "#00ffb3" },
+                    shape: { type: "circle" },
+                    opacity: { value: 0.3, random: true },
+                    size: { value: 3, random: true },
+                    line_linked: {
+                        enable: true,
+                        distance: 150,
+                        color: "#00ffb3",
+                        opacity: 0.1,
+                        width: 1
+                    },
+                    move: {
+                        enable: true,
+                        speed: 2,
+                        direction: "none",
+                        random: true,
+                        straight: false,
+                        out_mode: "out",
+                        bounce: false
+                    }
+                },
+                interactivity: {
+                    detect_on: "canvas",
+                    events: {
+                        onhover: { enable: true, mode: "repulse" },
+                        onclick: { enable: true, mode: "push" }
+                    }
+                },
+                retina_detect: true
+            });
+            
+            // Add fullscreen functionality
+            function toggleFullscreen(frameId) {
+                const frame = document.getElementById(frameId);
+                if (!document.fullscreenElement) {
+                    if (frame.requestFullscreen) {
+                        frame.requestFullscreen();
+                    } else if (frame.webkitRequestFullscreen) {
+                        frame.webkitRequestFullscreen();
+                    } else if (frame.msRequestFullscreen) {
+                        frame.msRequestFullscreen();
+                    }
+                } else {
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen();
+                    } else if (document.webkitExitFullscreen) {
+                        document.webkitExitFullscreen();
+                    } else if (document.msExitFullscreen) {
+                        document.msExitFullscreen();
+                    }
+                }
+            }
+            
+            window.toggleFullscreen = toggleFullscreen;
+        });
+        
+        /* ===== AUTH SYSTEM ===== */
+        // DOM Elements
+        const authSection = document.getElementById('authSection');
+        const mainContent = document.getElementById('mainContent');
+        const gamesSection = document.getElementById('gamesSection');
+        const profileBadge = document.getElementById('profileBadge');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const welcomeTitle = document.getElementById('welcome');
+        const userTagline = document.getElementById('userTagline');
+        const avatar = document.getElementById('avatar');
+        const profileName = document.getElementById('profileName');
+        
+        // Auth tabs
+        const authTabs = document.querySelectorAll('.auth-tab');
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+        
+        // Login elements
+        const loginUsername = document.getElementById('loginUsername');
+        const loginPassword = document.getElementById('loginPassword');
+        const loginBtn = document.getElementById('loginBtn');
+        const loginMessage = document.getElementById('loginMessage');
+        
+        // Register elements
+        const registerUsername = document.getElementById('registerUsername');
+        const registerPassword = document.getElementById('registerPassword');
+        const registerBtn = document.getElementById('registerBtn');
+        const registerMessage = document.getElementById('registerMessage');
+        
+        // Score elements
+        const flappyBestDisplay = document.getElementById('flappyBest');
+        const gamesPlayedDisplay = document.getElementById('gamesPlayed');
+        const totalScoreDisplay = document.getElementById('totalScore');
+        const gameBestDisplay = document.getElementById('gameBest');
+        const gameScoreDisplay = document.getElementById('gameScore');
+        const gameLevelDisplay = document.getElementById('gameLevel');
+        
+        // Tab switching
+        authTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const formId = tab.getAttribute('data-form');
+                
+                // Update active tab
+                authTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                // Show active form
+                loginForm.classList.remove('active');
+                registerForm.classList.remove('active');
+                
+                if (formId === 'login') {
+                    loginForm.classList.add('active');
+                } else {
+                    registerForm.classList.add('active');
+                }
+                
+                // Clear messages
+                loginMessage.classList.add('hidden');
+                registerMessage.classList.add('hidden');
+            });
+        });
+        
+        // User class to handle user data
+        class User {
+            constructor(username, password) {
+                this.username = username;
+                this.password = password;
+                this.flappyBest = 0;
+                this.gamesPlayed = 0;
+                this.totalScore = 0;
+                this.grannyLevel = 1;
+                this.lastPlayed = new Date().toISOString();
+            }
+            
+            save() {
+                const users = this.getAllUsers();
+                users[this.username] = this;
+                localStorage.setItem('users', JSON.stringify(users));
+                localStorage.setItem('currentUser', this.username);
+            }
+            
+            getAllUsers() {
+                return JSON.parse(localStorage.getItem('users')) || {};
+            }
+            
+            static getUser(username) {
+                const users = JSON.parse(localStorage.getItem('users')) || {};
+                return users[username];
+            }
+            
+            static exists(username) {
+                const users = JSON.parse(localStorage.getItem('users')) || {};
+                return users.hasOwnProperty(username);
+            }
+            
+            static login(username, password) {
+                const user = this.getUser(username);
+                if (user && user.password === password) {
+                    localStorage.setItem('currentUser', username);
+                    return user;
+                }
+                return null;
+            }
+            
+            static logout() {
+                localStorage.removeItem('currentUser');
+            }
+            
+            static getCurrentUser() {
+                const username = localStorage.getItem('currentUser');
+                if (username) {
+                    return this.getUser(username);
+                }
+                return null;
+            }
+            
+            updateFlappyScore(score) {
+                if (score > this.flappyBest) {
+                    this.flappyBest = score;
+                }
+                this.gamesPlayed++;
+                this.totalScore += score;
+                this.lastPlayed = new Date().toISOString();
+                this.save();
+            }
+            
+            updateGrannyLevel(level) {
+                if (level > this.grannyLevel) {
+                    this.grannyLevel = level;
+                    this.save();
+                }
+            }
+        }
+        
+        // Register function
+        registerBtn.addEventListener('click', () => {
+            const username = registerUsername.value.trim();
+            const password = registerPassword.value.trim();
+            
+            if (!username || !password) {
+                showMessage(registerMessage, 'Заполните все поля', 'error');
+                return;
+            }
+            
+            if (username.length < 3) {
+                showMessage(registerMessage, 'Логин должен быть не менее 3 символов', 'error');
+                return;
+            }
+            
+            if (password.length < 4) {
+                showMessage(registerMessage, 'Пароль должен быть не менее 4 символов', 'error');
+                return;
+            }
+            
+            if (User.exists(username)) {
+                showMessage(registerMessage, 'Пользователь уже существует', 'error');
+                return;
+            }
+            
+            const user = new User(username, password);
+            user.save();
+            
+            showMessage(registerMessage, 'Регистрация успешна!', 'success');
+            
+            // Auto login after registration
+            setTimeout(() => {
+                loginUser(username, password);
+            }, 1000);
+        });
+        
+        // Login function
+        loginBtn.addEventListener('click', () => {
+            const username = loginUsername.value.trim();
+            const password = loginPassword.value.trim();
+            
+            if (!username || !password) {
+                showMessage(loginMessage, 'Заполните все поля', 'error');
+                return;
+            }
+            
+            loginUser(username, password);
+        });
+        
+        function loginUser(username, password) {
+            const user = User.login(username, password);
+            
+            if (user) {
+                showMessage(loginMessage, 'Вход выполнен успешно!', 'success');
+                
+                // Update UI
+                setTimeout(() => {
+                    showMainContent(user);
+                }, 500);
+            } else {
+                showMessage(loginMessage, 'Неверный логин или пароль', 'error');
+            }
+        }
+        
+        // Logout function
+        logoutBtn.addEventListener('click', () => {
+            User.logout();
+            showAuthSection();
+        });
+        
+        // Show main content after login
+        function showMainContent(user) {
+            // Update profile
+            profileName.textContent = user.username;
+            avatar.textContent = user.username.charAt(0).toUpperCase();
+            avatar.style.background = getColorFromUsername(user.username);
+            
+            // Update welcome message
+            welcomeTitle.textContent = `Добро пожаловать, ${user.username}!`;
+            userTagline.textContent = `Готовы получить скинченджер от скваки? Рекорд: ${user.flappyBest}`;
+            
+            // Update scores
+            flappyBestDisplay.textContent = user.flappyBest;
+            gamesPlayedDisplay.textContent = user.gamesPlayed;
+            totalScoreDisplay.textContent = user.totalScore;
+            gameBestDisplay.textContent = user.flappyBest;
+            gameLevelDisplay.textContent = user.grannyLevel;
+            
+            // Show/hide sections
+            authSection.classList.add('hidden');
+            profileBadge.classList.remove('hidden');
+            mainContent.classList.remove('hidden');
+            gamesSection.classList.remove('hidden');
+            
+            // Apply fade-in animation
+            mainContent.classList.add('fade-in');
+            gamesSection.classList.add('fade-in');
+        }
+        
+        // Show auth section
+        function showAuthSection() {
+            authSection.classList.remove('hidden');
+            profileBadge.classList.add('hidden');
+            mainContent.classList.add('hidden');
+            gamesSection.classList.add('hidden');
+            
+            // Clear forms
+            loginUsername.value = '';
+            loginPassword.value = '';
+            registerUsername.value = '';
+            registerPassword.value = '';
+            
+            // Switch to login tab
+            authTabs[0].click();
+        }
+        
+        // Message display function
+        function showMessage(element, text, type) {
+            element.textContent = text;
+            element.className = `message ${type}`;
+            element.classList.remove('hidden');
+        }
+        
+        // Generate color from username
+        function getColorFromUsername(username) {
+            let hash = 0;
+            for (let i = 0; i < username.length; i++) {
+                hash = username.charCodeAt(i) + ((hash << 5) - hash);
+            }
+            
+            const hue = Math.abs(hash % 360);
+            return `hsl(${hue}, 70%, 50%)`;
+        }
+        
+        // Update CSS variables with user color
+        function updateThemeColor(color) {
+            document.documentElement.style.setProperty('--accent', color);
+            
+            // Create darker version
+            const darker = color.replace(/hsl\((\d+), (\d+)%, (\d+)%\)/, (match, h, s, l) => {
+                return `hsl(${h}, ${s}%, ${Math.max(0, l - 20)}%)`;
+            });
+            document.documentElement.style.setProperty('--accent-dark', darker);
+        }
+        
+        // Game score functions
+        function saveFlappyScore() {
+            const user = User.getCurrentUser();
+            if (!user) return;
+            
+            // For demo purposes, we'll use a random score
+            // In real implementation, you would get this from the game
+            const randomScore = Math.floor(Math.random() * 100) + 10;
+            gameScoreDisplay.textContent = randomScore;
+            
+            user.updateFlappyScore(randomScore);
+            
+            // Update displays
+            flappyBestDisplay.textContent = user.flappyBest;
+            gamesPlayedDisplay.textContent = user.gamesPlayed;
+            totalScoreDisplay.textContent = user.totalScore;
+            gameBestDisplay.textContent = user.flappyBest;
+            
+            // Show success message
+            alert(`Рекорд сохранен: ${randomScore}! Лучший: ${user.flappyBest}`);
+        }
+        
+        function updateFlappyScore() {
+            // Simulate score update from game
+            const randomScore = Math.floor(Math.random() * 50);
+            gameScoreDisplay.textContent = randomScore;
+        }
+        
+        function saveGrannyScore() {
+            const user = User.getCurrentUser();
+            if (!user) return;
+            
+            // Simulate level progress
+            const newLevel = user.grannyLevel + Math.floor(Math.random() * 2);
+            gameLevelDisplay.textContent = newLevel;
+            
+            user.updateGrannyLevel(newLevel);
+            
+            alert(`Прогресс сохранен! Уровень: ${user.grannyLevel}`);
+        }
+        
+        // Check if user is already logged in
+        window.addEventListener('load', () => {
+            const user = User.getCurrentUser();
+            if (user) {
+                showMainContent(user);
+            } else {
+                showAuthSection();
+            }
+        });
+        
+        // Handle Enter key in forms
+        loginPassword.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') loginBtn.click();
+        });
+        
+        registerPassword.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') registerBtn.click();
+        });
+    window.addEventListener('load', () => {
+    const firstLaunch = document.getElementById('firstLaunch');
+
+    if (localStorage.getItem('firstLaunchDone')) {
+        firstLaunch.remove();
+    } else {
+        localStorage.setItem('firstLaunchDone', 'true');
+
+        setTimeout(() => {
+            firstLaunch.remove();
+        }, 5200);
     }
+});
 
-    // Удаление труб за пределами экрана
-    if (p.x < -PIPE_WIDTH) {
-      pipes.splice(i, 1);
-    }
-  }
-}
-
-function draw() {
-  // Очистка канваса
-  ctx.fillStyle = '#111';
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  // Отрисовка птицы
-  ctx.fillStyle = profile ? profile.color : '#00ffb3';
-  ctx.beginPath();
-  ctx.arc(bird.x, bird.y, 12, 0, Math.PI * 2);
-  ctx.fill();
-
-  // Отрисовка труб
-  ctx.fillStyle = '#0f0';
-  pipes.forEach(p => {
-    // Верхняя труба
-    ctx.fillRect(p.x, 0, PIPE_WIDTH, p.top);
-    // Нижняя труба
-    ctx.fillRect(p.x, p.top + PIPE_GAP, PIPE_WIDTH, canvas.height);
-  });
-}
-
-function mainLoop() {
-  update();
-  draw();
-  if (running) {
-    gameLoop = requestAnimationFrame(mainLoop);
-  }
-}
-
-function endGame() {
-  running = false;
-  if (pipeInterval) clearInterval(pipeInterval);
-  
-  if (score > best) {
-    best = score;
-    localStorage.setItem('flappyBest', best);
-    document.getElementById('best').textContent = best;
-  }
-}
-
-canvas.onclick = () => {
-  if (!running) return;
-  bird.v = JUMP_FORCE;
-};
-
-document.getElementById('start').onclick = () => {
-  resetGame();
-  // Добавляем первую трубу сразу
-  addPipe();
-  // Добавляем трубы каждые 1500ms
-  pipeInterval = setInterval(addPipe, 1500);
-  // Запускаем игровой цикл
-  mainLoop();
-};
-</script>
-
-</body>
-</html>
+    </script>
+</body></html>
